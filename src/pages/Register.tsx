@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Link } from "react-router";
 
 const Register: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   return (
     <>
       <div className="flex-wrapper">
@@ -13,30 +17,26 @@ const Register: React.FC = () => {
             <h1>Регистрация</h1>
           </div>
 
-          <form action="" method="post" className="registration__form">
+          <div className="registration__form">
             <div className="registration__form-field">
               <label htmlFor="email">Введите Email:</label>
               <input type="email" id="email" />
             </div>
             <div className="registration__form-field">
-              <label htmlFor="login">Введите логин:</label>
-              <input type="text" id="login" />
+              <label htmlFor="username">Введите имя:</label>
+              <input type="text" id="username" />
             </div>
             <div className="registration__form-field">
               <label htmlFor="password">Введите пароль:</label>
               <input type="password" id="password" />
             </div>
-            <div className="registration__form-field">
-              <label htmlFor="password-repeat">Повторите пароль:</label>
-              <input type="password" id="password" />
-            </div>
             <div className="registration__done">
               <button>Создать аккаунт</button>
               <span>
-                Уже есть аккаунт? <Link to="/login">Войти</Link>
+                Уже есть аккаунт? <Link to="/login"> Войти</Link>
               </span>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </>

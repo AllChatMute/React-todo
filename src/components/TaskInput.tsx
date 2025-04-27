@@ -14,9 +14,8 @@ const TaskInput: React.FC = () => {
 
   return (
     <>
-      <div className="bg-white p-[15px]">
+      <div>
         <input
-          className="w-[310px] h-[30px] outline-0 border-0 text-[1.5em] bg-white text-[#2f4f4f]"
           type="text"
           placeholder="new task"
           name="task"
@@ -25,16 +24,19 @@ const TaskInput: React.FC = () => {
           onChange={() => handleChangeValue(inputRef.current!.value)}
         ></input>
         <button
-          className="text-[1.5em] text-[#53bdff] bg-white outline-0 border-0 w-[50px]"
-          onClick={() =>
+          onClick={() => {
+            if (inputValue === "") return;
+
             dispatch(
               addTask({
                 label: inputValue,
                 isCompleted: false,
                 id: new Date().getMilliseconds() * Math.random(),
               })
-            )
-          }
+            );
+
+            setInputValue("");
+          }}
         >
           ADD
         </button>

@@ -1,6 +1,21 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useState } from "react";
+import axios from "axios";
 
 const Login: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    if (email && password) {
+      axios.post("http://localhost:5173/auth/login", {
+        email,
+        password,
+      });
+    }
+  };
   return (
     <>
       <div className="flex-wrapper">
@@ -13,24 +28,36 @@ const Login: React.FC = () => {
             <h1>Вход</h1>
           </div>
 
-          <form action="post" className="registration__form">
+          <div className="registration__form">
             <div className="registration__form-field">
-              <label htmlFor="login">Введите логин:</label>
-              <input type="text" id="login" />
+              <label htmlFor="email">Введите email:</label>
+              <input
+                type="text"
+                id="email"
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                }}
+              />
             </div>
             <div className="registration__form-field">
               <label htmlFor="password">Введите пароль:</label>
-              <input type="password" id="password" />
+              <input
+                type="password"
+                id="password"
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                }}
+              />
             </div>
 
             <div className="registration__done">
-              <button>Войти</button>
+              <button onClick={handleLogin}>Войти</button>
               <span>
                 Нет аккаунта?
-                <Link to="/register">Зарегистрироваться</Link>
+                <Link to="/"> Зарегистрироваться</Link>
               </span>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </>
