@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import isTokenValid from "../utils/isTokenValid";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -8,14 +9,28 @@ const Login: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    if (email && password) {
-      axios.post("http://localhost:5173/auth/login", {
-        email,
-        password,
-      });
+  const handleLogin = async () => {
+    try {
+      if (email && password) {
+        const response = await axios.post("http://localhost:3000/auth/login", {
+          email,
+          password,
+        });
+        const expiryDate = new Date().getTime() + 3600 * 1000;
+
+        localStorage.setItem("authToken", response.data);
+        localStorage.setItem("profile", email);
+        localStorage.setItem("expiresIn", expiryDate.toString());
+        navigate("/tasks");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (isTokenValid()) navigate("/tasks");
+  });
   return (
     <>
       <div className="flex-wrapper">
