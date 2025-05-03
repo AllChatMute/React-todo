@@ -19,6 +19,9 @@ const Register: React.FC = () => {
             email,
             username,
             password,
+          },
+          {
+            withCredentials: true,
           }
         );
 

@@ -12,10 +12,16 @@ const Login: React.FC = () => {
   const handleLogin = async () => {
     try {
       if (email && password) {
-        const response = await axios.post("http://localhost:3000/auth/login", {
-          email,
-          password,
-        });
+        const response = await axios.post(
+          "http://localhost:3000/auth/login",
+          {
+            email,
+            password,
+          },
+          {
+            withCredentials: true,
+          }
+        );
         const expiryDate = new Date().getTime() + 3600 * 1000;
 
         localStorage.setItem("authToken", response.data);

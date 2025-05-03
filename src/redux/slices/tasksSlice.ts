@@ -1,8 +1,11 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 import ITask from "../../@types/taskInterface";
+import isTokenValid from "../../utils/isTokenValid";
 
 interface InitialState {
   tasks: ITask[];
+  status: "pending" | "success" | "rejected";
 }
 
 const initialState: InitialState = {
@@ -15,7 +18,21 @@ const initialState: InitialState = {
       return [];
     }
   })(),
+  status: "pending",
 };
+
+export const fetchTasks = createAsyncThunk("tasks/fetchTasks", async () => {
+  try {
+    if (!isTokenValid()) return { message: "Unauthorized" };
+
+    const response = await axios.get("http://localhost:3000/todos", {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 const tasksSlice = createSlice({
   name: "tasks",
@@ -41,6 +58,19 @@ const tasksSlice = createSlice({
       state.tasks = [];
       localStorage.setItem("tasks", "[]");
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchTasks.fulfilled, (state) => {
+      state.status = "success";
+    });
+    builder.addCase(fetchTasks.pending, (state) => {
+      state.status = "pending";
+    });
+    builder.addCase(fetchTasks.rejected, (state) => {
+      state.status = "rejected";
+      console.log("Ошибка");
+      state.tasks = [];
+    });
   },
 });
 export const { addTask, deleteTask, setIsCompleted, clearTasks } =
