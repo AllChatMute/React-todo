@@ -1,5 +1,5 @@
 export default interface IManageTasksParams {
-  method: "POST" | "PUT" | "DELETE";
+  method: "POST" | "DELETE";
   body?: { title: string };
   ID?: number;
 }

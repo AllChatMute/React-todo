@@ -16,15 +16,7 @@ interface ResTasks {
 }
 
 const initialState: InitialState = {
-  tasks: (() => {
-    try {
-      const stored = localStorage.getItem("tasks");
-      return stored ? JSON.parse(stored) : [];
-    } catch (error) {
-      console.error("Ошибка при загрузке задач:", error);
-      return [];
-    }
-  })(),
+  tasks: [],
   status: "pending",
 };
 
@@ -84,26 +76,6 @@ const tasksSlice = createSlice({
     setTasks: (state, action: PayloadAction<ITask[]>) => {
       state.tasks = action.payload;
     },
-    addTask: (state, action: PayloadAction<ITask>) => {
-      state.tasks.push(action.payload);
-      localStorage.setItem("tasks", JSON.stringify(state.tasks));
-    },
-    setIsCompleted: (state, action: PayloadAction<number>) => {
-      state.tasks.forEach((item) => {
-        if (item.id === action.payload) {
-          item.isCompleted = !item.isCompleted;
-          localStorage.setItem("tasks", JSON.stringify(state.tasks));
-        }
-      });
-    },
-    deleteTask: (state, action: PayloadAction<number>) => {
-      state.tasks = state.tasks.filter((item) => item.id !== action.payload);
-      localStorage.setItem("tasks", JSON.stringify(state.tasks));
-    },
-    clearTasks: (state) => {
-      state.tasks = [];
-      localStorage.setItem("tasks", "[]");
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchTasks.fulfilled, (state) => {
@@ -119,6 +91,5 @@ const tasksSlice = createSlice({
     });
   },
 });
-export const { setTasks, addTask, deleteTask, setIsCompleted, clearTasks } =
-  tasksSlice.actions;
+export const { setTasks } = tasksSlice.actions;
 export default tasksSlice.reducer;

@@ -1,6 +1,6 @@
 import Task from "./Task";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
-import { clearTasks, fetchTasks, setTasks } from "../redux/slices/tasksSlice";
+import { fetchTasks, setTasks } from "../redux/slices/tasksSlice";
 import { useEffect } from "react";
 
 const TaskList: React.FC = () => {
@@ -29,9 +29,6 @@ const TaskList: React.FC = () => {
             <Task key={item.id} {...item} />
           ))}
         </ul>
-        <a id="clear" onClick={() => dispatch(clearTasks())}>
-          Clear
-        </a>
       </div>
     </>
   );

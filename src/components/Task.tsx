@@ -1,10 +1,5 @@
-import {
-  setIsCompleted,
-  manageTasks,
-  fetchTasks,
-  setTasks,
-} from "../redux/slices/tasksSlice";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { manageTasks, fetchTasks, setTasks } from "../redux/slices/tasksSlice";
+import { useAppDispatch } from "../redux/hooks";
 
 interface Props {
   label: string;
@@ -14,8 +9,6 @@ interface Props {
 
 const Task: React.FC<Props> = ({ label, id }) => {
   const dispatch = useAppDispatch();
-  const tasks = useAppSelector((state) => state.tasks.tasks);
-  const currentTask = tasks.find((item) => item.id === id);
 
   const handleDeleteTask = async () => {
     try {
@@ -33,11 +26,6 @@ const Task: React.FC<Props> = ({ label, id }) => {
         <span className="delete" onClick={() => handleDeleteTask()}>
           ×
         </span>
-        <input
-          type="checkbox"
-          checked={currentTask?.isCompleted}
-          onChange={() => dispatch(setIsCompleted(id))}
-        ></input>
         <label>{label}</label>
       </li>
     </>
