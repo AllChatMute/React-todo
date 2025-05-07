@@ -2,10 +2,17 @@ import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import ITask from "../../@types/taskInterface";
 import isTokenValid from "../../utils/isTokenValid";
+import IManageTasksParams from "../../@types/manageTasksParamsInterface";
 
 interface InitialState {
   tasks: ITask[];
   status: "pending" | "success" | "rejected";
+}
+
+interface ResTasks {
+  id: number;
+  title: string;
+  _id: string;
 }
 
 const initialState: InitialState = {
@@ -28,16 +35,55 @@ export const fetchTasks = createAsyncThunk("tasks/fetchTasks", async () => {
     const response = await axios.get("http://localhost:3000/todos", {
       withCredentials: true,
     });
-    return response.data;
+    const data = response.data.data.map((item: ResTasks) => {
+      return {
+        id: item.id,
+        label: item.title,
+        isCompleted: false,
+      };
+    });
+
+    return data;
   } catch (error) {
     console.log(error);
   }
 });
 
+export const manageTasks = createAsyncThunk(
+  "tasks/manageTasks",
+  async ({ method, body, ID }: IManageTasksParams) => {
+    try {
+      if (!isTokenValid()) return { message: "Unauthorized" };
+
+      if (method === "POST") {
+        await axios.post("http://localhost:3000/todos", body, {
+          withCredentials: true,
+        });
+        return { message: "taskAdded" };
+      }
+
+      if (method === "DELETE" && ID) {
+        await axios.delete(`http://localhost:3000/todos/${ID}`, {
+          withCredentials: true,
+        });
+
+        return { message: "Deleted" };
+      } else {
+        return { message: "Didn't get ID" };
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const tasksSlice = createSlice({
   name: "tasks",
   initialState,
   reducers: {
+    setTasks: (state, action: PayloadAction<ITask[]>) => {
+      state.tasks = action.payload;
+    },
     addTask: (state, action: PayloadAction<ITask>) => {
       state.tasks.push(action.payload);
       localStorage.setItem("tasks", JSON.stringify(state.tasks));
@@ -73,6 +119,6 @@ const tasksSlice = createSlice({
     });
   },
 });
-export const { addTask, deleteTask, setIsCompleted, clearTasks } =
+export const { setTasks, addTask, deleteTask, setIsCompleted, clearTasks } =
   tasksSlice.actions;
 export default tasksSlice.reducer;

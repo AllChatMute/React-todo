@@ -1,6 +1,6 @@
 import Task from "./Task";
 import { useAppSelector, useAppDispatch } from "../redux/hooks";
-import { clearTasks, fetchTasks } from "../redux/slices/tasksSlice";
+import { clearTasks, fetchTasks, setTasks } from "../redux/slices/tasksSlice";
 import { useEffect } from "react";
 
 const TaskList: React.FC = () => {
@@ -9,8 +9,9 @@ const TaskList: React.FC = () => {
 
   const fetchTodos = async () => {
     try {
-      const data = await dispatch(fetchTasks());
-      console.log(data);
+      const response = await dispatch(fetchTasks());
+
+      dispatch(setTasks(response.payload));
     } catch (error) {
       console.log(error);
     }
@@ -18,7 +19,8 @@ const TaskList: React.FC = () => {
 
   useEffect(() => {
     fetchTodos();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       <div className="taskBoard">
