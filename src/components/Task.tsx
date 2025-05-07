@@ -1,4 +1,9 @@
-import { setIsCompleted, deleteTask } from "../redux/slices/tasksSlice";
+import {
+  setIsCompleted,
+  manageTasks,
+  fetchTasks,
+  setTasks,
+} from "../redux/slices/tasksSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 interface Props {
@@ -11,10 +16,21 @@ const Task: React.FC<Props> = ({ label, id }) => {
   const dispatch = useAppDispatch();
   const tasks = useAppSelector((state) => state.tasks.tasks);
   const currentTask = tasks.find((item) => item.id === id);
+
+  const handleDeleteTask = async () => {
+    try {
+      await dispatch(manageTasks({ method: "DELETE", ID: id }));
+
+      const response = await dispatch(fetchTasks());
+      dispatch(setTasks(response.payload));
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <li>
-        <span className="delete" onClick={() => dispatch(deleteTask(id))}>
+        <span className="delete" onClick={() => handleDeleteTask()}>
           ×
         </span>
         <input

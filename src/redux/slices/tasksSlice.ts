@@ -55,7 +55,7 @@ export const manageTasks = createAsyncThunk(
     try {
       if (!isTokenValid()) return { message: "Unauthorized" };
 
-      if (method === "POST") {
+      if (method === "POST" && body) {
         await axios.post("http://localhost:3000/todos", body, {
           withCredentials: true,
         });
